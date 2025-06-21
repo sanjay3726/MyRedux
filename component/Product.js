@@ -1,47 +1,33 @@
-import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, {useLayoutEffect} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
+import ProductList from './ProductList';
 
 const HeaderCartIcon = ({ onPress }) => {
   const cartItems = useSelector((state) => state.productReducer);
   const itemCount = Array.isArray(cartItems) ? cartItems.length : 0;
-
-  return (
-    <View style={styles.container}>
-      {/* Product List Title */}
-      <Text style={styles.headerText}>Product List</Text>
-
-      {/* Cart Icon + Badge */}
-      <TouchableOpacity style={styles.cartWrapper} onPress={onPress}>
-        <Text style={styles.cartIcon}>🛒</Text>
-        {itemCount > 0 && (
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{itemCount}</Text>
-          </View>
-        )}
-      </TouchableOpacity>
-    </View>
-  );
+  const navigation = useNavigation()
+ useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity style={styles.cartWrapper} onPress={() => navigation.navigate('ProductList')}>
+          <Text style={styles.cartIcon}>🛒</Text>
+          {itemCount > 0 && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>{itemCount}</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      ),
+      headerTitle: 'Product List',
+    });
+  }, [navigation, itemCount]);
 };
 
 export default HeaderCartIcon;
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row', // 🔑 Align items horizontally
-    justifyContent: 'space-between', // 🔑 Separate title and icon
-    alignItems: 'center',
-    padding: 12,
-    backgroundColor: '#81ecec',
-  },
-  headerText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'black',
-    alignItems: 'center',
-    textAlign: 'center',
-    justifyContent: 'center'
-  },
   cartWrapper: {
     position: 'relative',
     padding: 5,

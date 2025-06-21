@@ -1,57 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  useColorScheme,
-  View,
-} from 'react-native';
+import React from 'react';
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-import Product from './component/Product';
-import Header from './component/Header';
-import { getProductList } from './component/services/productListApi';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ProductWrapper from './component/ProductWraper';
+import ProductList from './component/ProductList';
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+// Capitalize the stack instance
+const Stack = createNativeStackNavigator();
 
-  // ✅ Step 1: State for product list
-  const [productList, setProductList] = useState([]);
-
-  // ✅ Step 2: Fetch product list from API on mount
-  useEffect(() => {
-    fetchProductList();
-  }, []);
-
-  const fetchProductList = async () => {
-    try {
-      const products = await getProductList(); // API call
-      setProductList(products.users); // assuming API returns an array
-    } catch (error) {
-      console.warn('Error fetching product list:', error);
-    }
-  };
-
+const App = () => {
   return (
-    <View style={[styles.sectionContainer, backgroundStyle]}>
-      <Product />
-      <ScrollView>
-        {productList.map((item, index) => (
-          <Header key={item} item={item} />
-        ))}
-      </ScrollView>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+       <Stack.Screen name="Home" component={ProductWrapper} />
+       <Stack.Screen name="ProductList" component={ProductList} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    flex: 1,
-    marginTop: 60,
-    paddingHorizontal: 10,
-  },
-});
 
 export default App;
